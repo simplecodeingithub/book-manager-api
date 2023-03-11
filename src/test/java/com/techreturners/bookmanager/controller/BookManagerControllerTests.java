@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -50,6 +51,7 @@ public class BookManagerControllerTests {
         books.add(new Book(1L, "Book One", "This is the description for Book One", "Person One", Genre.Education));
         books.add(new Book(2L, "Book Two", "This is the description for Book Two", "Person Two", Genre.Education));
         books.add(new Book(3L, "Book Three", "This is the description for Book Three", "Person Three", Genre.Education));
+        //Book boo = new Book(4L, "Fabulous Four", "This is the description for the Fabulous Four", "Person Four", Genre.Fantasy);
 
         when(mockBookManagerServiceImpl.getAllBooks()).thenReturn(books);
 
@@ -107,6 +109,18 @@ public class BookManagerControllerTests {
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         verify(mockBookManagerServiceImpl, times(1)).updateBookById(book.getId(), book);
+    }
+    @Test
+    public void testDeleteMappingDeleteABookById() throws Exception{
+        Long bookId=5L;
+        var book = new Book(5L, "Book Five", "This is the description for Book Five", "Person Five", Genre.Fantasy);
+
+        doNothing().when(mockBookManagerServiceImpl).deleteBookById(book.getId());
+
+        this.mockMvcController.perform(MockMvcRequestBuilders.delete("/api/v1/book/" + book.getId()))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        verify(mockBookManagerServiceImpl, times(1)).deleteBookById(book.getId());
     }
 
 }
