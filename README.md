@@ -53,4 +53,26 @@ to add in exception handling to the project?
 
 - Clue 2: What if someone wants to find a book by an ID that doesn't yet exist? 
   How can we improve the API by handling errors gracefully and show a helpful message to the client?
-  
+
+Task Steps:
+
+As a user, I want to use the Book Manager API to delete a book using its ID.
+
+1. Implement an API endpoint that accepts a DELETE request and the ID of the book to be deleted.
+
+2. Create a method deleteById to perform delete operation and create test method in testclass.
+
+3. Check if the book with the given ID exists in the system. If it does, delete the book and return a success message to the user.
+
+4. If the book with the given ID doesn't exist, return an error message to the user stating that the book was not found.
+
+The features added:
+
+ - Delete a Book by Id
+
+Then created a CustomException to handle the exception for BookAlreadyExistsException and BookNotFoundException.
+
+- In the case of adding a Book with an ID for a book that already exists,raise an exception.The BookAlreadyExistsException handles the exception and give the
+error message that informs the user that the book already exists in the system.
+
+- In the case of finding a book by an ID that doesn't yet exist,raise an exception.The BookNotFoundException handles the exception and give the error message that informs the user that the book was not found in the system or database.
