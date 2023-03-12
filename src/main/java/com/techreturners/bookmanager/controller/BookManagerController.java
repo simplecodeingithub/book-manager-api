@@ -33,10 +33,10 @@ public class BookManagerController {
             Book book =bookManagerService.getBookById(bookId);
             return new ResponseEntity<>(book,HttpStatus.OK);
         }catch (BookNotFoundException e){
-            //CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.NOT_FOUND, "Book not found with ID " + bookId);
+            System.out.println("Book with ID " + bookId + " not found in the database");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        //return new ResponseEntity<>(bookManagerService.getBookById(bookId), HttpStatus.OK);
+
     }
 
     @PostMapping

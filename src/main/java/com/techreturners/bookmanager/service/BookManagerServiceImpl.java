@@ -39,9 +39,8 @@ public class BookManagerServiceImpl implements BookManagerService {
         if(book.isPresent()){
             return book.get();
         }else {
-            throw new BookNotFoundException("Book with ID " + id + " not found");
+            throw new BookNotFoundException(id.toString());
         }
-
     }
 
     //User Story 4 - Update Book By Id Solution
