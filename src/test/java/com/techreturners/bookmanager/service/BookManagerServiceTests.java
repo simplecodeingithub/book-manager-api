@@ -88,8 +88,8 @@ public class BookManagerServiceTests {
         Long bookId=5L;
         var book = new Book(5L, "Book Five", "This is the description for Book Five", "Person Five", Genre.Fantasy);
 
-        //when(mockBookManagerRepository.findById(bookId)).thenReturn(Optional.of(book));
-        doNothing().when(mockBookManagerRepository).deleteById(bookId);
+        when(mockBookManagerRepository.findById(bookId)).thenReturn(Optional.of(book));
+        //doNothing().when(mockBookManagerRepository).deleteById(bookId);
 
         bookManagerServiceImpl.deleteBookById(bookId);
         verify(mockBookManagerRepository,times(1)).deleteById(bookId);

@@ -3,11 +3,13 @@ package com.techreturners.bookmanager.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techreturners.bookmanager.model.Book;
 import com.techreturners.bookmanager.model.Genre;
+import com.techreturners.bookmanager.repository.BookManagerRepository;
 import com.techreturners.bookmanager.service.BookManagerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,18 +22,21 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
 public class BookManagerControllerTests {
-
     @Mock
     private BookManagerServiceImpl mockBookManagerServiceImpl;
 
     @InjectMocks
     private BookManagerController bookManagerController;
+
+    @Mock
+    private BookManagerRepository mockBookManagerRepository;
 
     @Autowired
     private MockMvc mockMvcController;
@@ -111,15 +116,26 @@ public class BookManagerControllerTests {
         verify(mockBookManagerServiceImpl, times(1)).updateBookById(book.getId(), book);
     }
     @Test
-    public void testDeleteMappingDeleteABookById() throws Exception{
-        Long bookId=5L;
-        var book = new Book(5L, "Book Five", "This is the description for Book Five", "Person Five", Genre.Fantasy);
+    public void testPostAndDeleteMappingDeleteABookById() throws Exception{
+        Book book = new Book(4L, "Book Four", "This is the description for Book Four", "Person Four", Genre.Fantasy);
 
-        doNothing().when(mockBookManagerServiceImpl).deleteBookById(book.getId());
+        // Mock the insertBook method to return the book object
+        when(mockBookManagerServiceImpl.insertBook(book)).thenReturn(book);
 
-        this.mockMvcController.perform(MockMvcRequestBuilders.delete("/api/v1/book/" + book.getId()))
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
+        // Send a POST request to create a new book
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.post("/api/v1/book/")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(book)))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
 
+        // Send a DELETE request to delete the book using its ID
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.delete("/api/v1/book/{id}", book.getId())
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        // Verify that the deleteBookById method was called once with the book ID
         verify(mockBookManagerServiceImpl, times(1)).deleteBookById(book.getId());
     }
 
